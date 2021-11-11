@@ -1,0 +1,37 @@
+{% extends 'greet/base.html' %}
+
+{% block title %} Developer Login/Register {% endblock %}
+
+{% block content %}
+
+{% if page == 'devsignup' %}
+<form method="POST" action="{% url 'devsignup' %}">
+    {% csrf_token %}
+<div class="form-control">
+    <h1>Register as Developer </h1>
+    {{form.as_p}}
+    {{ profile_file.as_p }}
+
+    <input type="submit" value="Register Developer" />
+    <p>Already have an account <a href="{% url 'devlogin' %}">Login</a></p>
+    <p>Back To Home <a href="{% url 'home' %}">Home</a></p>
+</div>
+</form>
+{% else %}
+<form action="{% url 'devlogin' %}" method="POST">
+    {% csrf_token %}
+<div class="form-control">
+    <h1>Login as Developer </h1>
+    <input type="text" name="username" placeholder="Enter Username"/>
+    <br>
+    <input type="password" name="password" placeholder="Enter password"/>
+    <br>
+    <input type="submit" value="Login" />
+
+    <p>Don't have an account <a href="{% url 'devsignup' %}">Sign Up</a></p>
+    <p>Back To Home <a href="{% url 'home' %}">Home</a></p>
+</div>
+</form>
+
+{% endif %}
+{% endblock %}

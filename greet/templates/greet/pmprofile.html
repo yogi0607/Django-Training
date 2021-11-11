@@ -1,0 +1,10 @@
+{% extends 'greet/base.html' %}
+
+{% block title %} Thank You {% endblock %}
+
+{% block content %}
+    <h2>Project manager Profile</h2>
+    {% if request.user.is_authenticated %}
+    <li><a href="{% url 'pmlogout' %}">Logout</a></li>
+    {% endif %}
+{% endblock %}

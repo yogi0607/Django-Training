@@ -1,0 +1,35 @@
+{% extends 'greet/base.html' %}
+
+{% block title %} Project Manager login/Register {% endblock %}
+
+{% block content %}
+
+{% if page == 'pmsignup' %}
+<form method="POST" action="{% url 'pmsignup' %}">
+    {% csrf_token %}
+    <div class="form-control">
+        <h1>Register as Manager </h1>
+    {{form.as_p}}
+    {{ profile_file.as_p }}
+    <input type="submit" value="Register Manager" />
+    <p>Already have an account <a href="{% url 'pmlogin' %}">Login</a></p>
+    <p>Back To Home <a href="{% url 'home' %}">Home</a></p>
+    </div>
+</form>
+{% else %}
+    <form action="{% url 'pmlogin' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-control">
+            <h1>Login as Manager </h1>
+        <input type="text" name="username" placeholder="Enter Username"/>
+        <br>
+        <input type="password" name="password" placeholder="Enter password"/>
+        <br>
+        <input type="submit" value="Login" />
+
+        <p>Don't have an account <a href="{% url 'pmsignup' %}">Sign Up</a></p>
+        <p>Back To Home <a href="{% url 'home' %}">Home</a></p>
+    </div>
+    </form>
+{% endif %}
+{% endblock %}
