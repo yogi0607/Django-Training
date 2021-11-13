@@ -114,12 +114,12 @@ def pm_closedTickets(request):
     context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
     return render(request, 'greet/alltickets.html', context)
 
-@login_required(login_url='pmlogin')
-def pm_getTickets(request):
-    page = 'pm_get_tickets'
-    tickets = Ticket.objects.all()
-    context = {'tickets':tickets, 'page':page}
-    return render(request, 'greet/alltickets.html', context)
+# @login_required(login_url='pmlogin')
+# def pm_getTickets(request):
+#     page = 'pm_get_tickets'
+#     tickets = Ticket.objects.all()
+#     context = {'tickets':tickets, 'page':page}
+#     return render(request, 'greet/alltickets.html', context)
 
 
 def logindeveloper(request):
@@ -274,8 +274,8 @@ def updatedev(request, pk):
     context = {'form' : form1}
     return render(request, 'greet/ticketupdate.html', context)
 
-@login_required(login_url='devlogin')
-def getTickets(request):
-    tickets = Ticket.objects.all()
-    context = {'tickets':tickets}
-    return render(request, 'greet/ticketList.html', context)
+# @login_required(login_url='devlogin')
+# def getTickets(request):
+#     tickets = Ticket.objects.all()
+#     context = {'tickets':tickets}
+#     return render(request, 'greet/ticketList.html', context)

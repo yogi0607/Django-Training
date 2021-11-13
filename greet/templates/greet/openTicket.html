@@ -34,7 +34,6 @@
 <p>Click here to see <a href="{% url 'acceptedticket' %}">Accepted Tickets</a></p>
 <p>Click here to see <a href="{% url 'completedticket' %}">Completed Tickets</a></p>
 <p>Click here to see <a href="{% url 'closedticket' %}">Closed Tickets</a></p>
-<p>Click here to see <a href="{% url 'getticket' %}">All Tickets</a></p>
 </div>
 
 {% elif page == 'acceptedticket' %}
@@ -68,7 +67,6 @@
     <p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
     <p>Click here to see <a href="{% url 'completedticket' %}">Completed Tickets</a></p>
     <p>Click here to see <a href="{% url 'closedticket' %}">Closed Tickets</a></p>
-    <p>Click here to see <a href="{% url 'getticket' %}">All Tickets</a></p>
     </div>
 
 {% elif page == 'completedticket' %}
@@ -102,7 +100,6 @@
     <p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
     <p>Click here to see <a href="{% url 'acceptedticket' %}">Accepted Tickets</a></p>
     <p>Click here to see <a href="{% url 'closedticket' %}">Closed Tickets</a></p>
-    <p>Click here to see <a href="{% url 'getticket' %}">All Tickets</a></p>
     </div>
 
     {% elif page == 'closedticket' %}
@@ -136,7 +133,6 @@
         <p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
         <p>Click here to see <a href="{% url 'acceptedticket' %}">Accepted Tickets</a></p>
         <p>Click here to see <a href="{% url 'completedticket' %}">Completed Tickets</a></p>
-        <p>Click here to see <a href="{% url 'getticket' %}">All Tickets</a></p>
         </div>
 
         {% endif %}

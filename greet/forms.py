@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.forms import ModelForm, fields
 # from django.contrib.auth.models import User
 from django.db import transaction
@@ -6,6 +7,13 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import PMProfile, DevProfile, User, Ticket
 
 class ManagerCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    def clean_email(self):
+        if User.objects.filter(email=self.cleaned_data['email']).exists():
+            raise forms.ValidationError("the given email is already registered")
+        return self.cleaned_data['email']
+
     class Meta:
         model = User
         fields = ['first_name', 'email', 'username', 'password1', 'password2']
@@ -22,6 +30,13 @@ class ManagerCreationForm(UserCreationForm):
         return user
 
 class DeveloperCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    def clean_email(self):
+        if User.objects.filter(email=self.cleaned_data['email']).exists():
+            raise forms.ValidationError("the given email is already registered")
+        return self.cleaned_data['email']
+        
     class Meta:
         model = User
         fields = ['first_name', 'email', 'username', 'password1', 'password2']
