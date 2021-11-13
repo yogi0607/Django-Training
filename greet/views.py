@@ -244,7 +244,7 @@ def completedTickets(request):
     page = 'completedticket'
     tickets = Ticket.objects.all()
     profile = request.user.devprofile
-    open_tickets = tickets.filter(status = 'Completed')
+    open_tickets = tickets.filter(status = 'Completed', accessed_by = profile)
     context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
     return render(request, 'greet/openTicket.html', context)
 
@@ -253,7 +253,7 @@ def closedTickets(request):
     page = 'closedticket'
     tickets = Ticket.objects.all()
     profile = request.user.devprofile
-    open_tickets = tickets.filter(status = 'Closed')
+    open_tickets = tickets.filter(status = 'Closed', accessed_by = profile)
     context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
     return render(request, 'greet/openTicket.html', context)
 
