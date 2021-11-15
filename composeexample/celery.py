@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> 293dd75f1577f1bed065b4e2752409b77a9bc6bb
 from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery

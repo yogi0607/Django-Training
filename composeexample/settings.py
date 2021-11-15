@@ -123,19 +123,12 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-<<<<<<< HEAD
 AUTH_USER_MODEL = 'greet.User'
-=======
->>>>>>> 293dd75f1577f1bed065b4e2752409b77a9bc6bb
+
 
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
-<<<<<<< HEAD
-CELERY_RESULT_SERIALIZER = 'json'
-=======
 CELERY_RESULT_SERIALIZER = 'json'
 
-
->>>>>>> 293dd75f1577f1bed065b4e2752409b77a9bc6bb
