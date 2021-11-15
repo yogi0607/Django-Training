@@ -1,0 +1,12 @@
+{% extends 'greet/base.html' %}
+
+{% block title %} Thank You {% endblock %}
+
+{% block content %}
+    <h2>Project manager Profile</h2>
+    <form action="{% url 'pmaccountdetails' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Login" />
+    </form>
+{% endblock %}

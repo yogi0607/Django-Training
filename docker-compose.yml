@@ -1,10 +1,40 @@
 version: "3.9"
-   
+
 services:
   web:
     build: .
+    container_name: celery_app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - 8000:8000
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
+      - CELERY_BROKER=redis://redis:6379/
+      - CELERY_BACKEND=redis://redis:6379/
+    depends_on:
+      - redis
+  celery:
+    build: .
+    command: celery -A composeexample worker -l INFO
+    volumes:
+      - .:/code
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
+      - CELERY_BROKER=redis://redis:6379/
+      - CELERY_BACKEND=redis://redis:6379/
+    depends_on:
+      - web
+      - redis
+  flower:
+    image: mher/flower:0.9.7
+    command: [ 'flower', '--broker=redis://redis:6379', '--port=5555' ]
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+  redis:
+    image: "redis:alpine"
