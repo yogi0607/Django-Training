@@ -66,7 +66,7 @@ def signupmanager(request):
             messages.success(request, 'User account was created!')
 
             login(request, user)
-            return redirect('pmdashboard')
+            return redirect('pmlogin')
 
         else:
             messages.success(request, 'An error has occured during registration')
