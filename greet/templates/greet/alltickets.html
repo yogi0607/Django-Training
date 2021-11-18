@@ -31,13 +31,13 @@
     </tbody>
 </table>
 <p>Back To Dashboard <a href="{% url 'pmdashboard' %}">Dashboard</a></p>
-<p>Click here to see <a href="{% url 'pm_open_tickets' %}">Open Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_accepted_tickets' %}">Accepted Tickets</a></p>
+<p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
+<p>Click here to see <a href="{% url 'acceptedtickets' %}">Accepted Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_completed_tickets' %}">Completed Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_closed_tickets' %}">Closed Tickets</a></p>
 </div>
 
-{% elif page == 'pm_open_tickets' %}
+{% elif page == 'opentickets' %}
 <div class="form-control">
 <h2>All Open Tickets</h2>
 <table class="table" style="border: 1px solid black;">
@@ -66,12 +66,12 @@
 </table>
 <p>Back To Dashboard <a href="{% url 'pmdashboard' %}">Dashboard</a></p>
 <p>Click here to see<a href="{% url 'viewticket' %}">All Your Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_accepted_tickets' %}">Accepted Tickets</a></p>
+<p>Click here to see <a href="{% url 'acceptedtickets' %}">Accepted Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_completed_tickets' %}">Completed Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_closed_tickets' %}">Closed Tickets</a></p>
 </div>
 
-{% elif page == 'pm_accepted_tickets' %}
+{% elif page == 'acceptedtickets' %}
 <div class="form-control">
 <h2>Accepted Tickets</h2>
 <table class="table" style="border: 1px solid black;">
@@ -100,7 +100,7 @@
 </table>
 <p>Back To Dashboard <a href="{% url 'pmdashboard' %}">Dashboard</a></p>
 <p>Click here to see<a href="{% url 'viewticket' %}">All Your Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_open_tickets' %}">Open Tickets</a></p>
+<p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_completed_tickets' %}">Completed Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_closed_tickets' %}">Closed Tickets</a></p>
 </div>
@@ -134,8 +134,8 @@
 </table>
 <p>Back To Dashboard <a href="{% url 'pmdashboard' %}">Dashboard</a></p>
 <p>Click here to see<a href="{% url 'viewticket' %}">All Your Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_open_tickets' %}">Open Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_accepted_tickets' %}">Accepted Tickets</a></p>
+<p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
+<p>Click here to see <a href="{% url 'acceptedtickets' %}">Accepted Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_closed_tickets' %}">Closed Tickets</a></p>
 </div>
 
@@ -168,8 +168,8 @@
 </table>
 <p>Back To Dashboard <a href="{% url 'pmdashboard' %}">Dashboard</a></p>
 <p>Click here to see<a href="{% url 'viewticket' %}">All Your Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_open_tickets' %}">Open Tickets</a></p>
-<p>Click here to see <a href="{% url 'pm_accepted_tickets' %}">Accepted Tickets</a></p>
+<p>Click here to see <a href="{% url 'opentickets' %}">Open Tickets</a></p>
+<p>Click here to see <a href="{% url 'acceptedtickets' %}">Accepted Tickets</a></p>
 <p>Click here to see <a href="{% url 'pm_completed_tickets' %}">Completed Tickets</a></p>
 </div>
 
