@@ -49,8 +49,8 @@ class Ticket(models.Model):
     status = models.CharField(max_length=200, choices=TICKET_STATUS, default=OPEN)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
-    def get_absolute_url(self):
-        return reverse("tickets:opentickets")
+    # def get_absolute_url(self):
+    #     return reverse("opentickets")
 
     def __str__(self):
         return self.title

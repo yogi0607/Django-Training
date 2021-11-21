@@ -2,13 +2,15 @@ from django import forms
 from django import contrib
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from greet.models import DevProfile, Ticket
 from greet.forms import DeveloperCreationForm, TicketForm
 
-from django.views.generic import View, TemplateView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 
 
 def logindeveloper(request):
@@ -73,55 +75,62 @@ def devdashboard(request):
     return render(request, 'greet/developerdashboard.html')
 
 
-@login_required(login_url='devlogin')
-def openTickets(request):
-    page = 'opentickets'
-    tickets = Ticket.objects.all()
-    open_tickets = tickets.filter(status = 'Open')
-    context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-    return render(request, 'greet/openTicket.html', context)
+class DevOpenTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/ticket_list.html'
+    model = Ticket
+    page = 'dev_opentickets'
+    extra_context = {'page' : page}
 
-@login_required(login_url='devlogin')
-def acceptedTickets(request):
-    page = 'acceptedticket'
-    tickets = Ticket.objects.all()
-    profile = request.user.devprofile
-    open_tickets = tickets.filter(status = 'Accepted', accessed_by = profile)
-    context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-    return render(request, 'greet/openTicket.html', context)
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(status = 'Open')
+        return queryset
 
-@login_required(login_url='devlogin')
-def completedTickets(request):
-    page = 'completedticket'
-    tickets = Ticket.objects.all()
-    profile = request.user.devprofile
-    open_tickets = tickets.filter(status = 'Completed', accessed_by = profile)
-    context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-    return render(request, 'greet/openTicket.html', context)
 
-@login_required(login_url='devlogin')
-def closedTickets(request):
-    page = 'closedticket'
-    tickets = Ticket.objects.all()
-    profile = request.user.devprofile
-    open_tickets = tickets.filter(status = 'Closed', accessed_by = profile)
-    context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-    return render(request, 'greet/openTicket.html', context)
+class DevAcceptedTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/ticket_list.html'
+    model = Ticket
+    page = 'dev_acceptedtickets'
+    extra_context = {'page' : page}
 
-@login_required(login_url='devlogin')
-def updatedev(request, pk):
-    ticket = Ticket.objects.get(id=pk)
-    profile = request.user.devprofile
-    form1 = TicketForm(instance=ticket)
-    if request.method == 'POST':
-        form1 = TicketForm(request.POST, instance=ticket)
-        if form1.is_valid():
-            ticket = form1.save(commit=False)
-            ticket.accessed_by = profile
-            # ticket.status = 'Accepted'
-            ticket.save()
-            return redirect('opentickets')
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(accessed_by=self.request.user.devprofile, status = 'Accepted')
+        return queryset
 
-    context = {'form' : form1}
-    return render(request, 'greet/ticketupdate.html', context)
+
+class DevCompletedTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/ticket_list.html'
+    model = Ticket
+    page = 'dev_completedtickets'
+    extra_context = {'page' : page}
+
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(accessed_by=self.request.user.devprofile, status = 'Completed')
+        return queryset
+
+
+class DevClosedTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/ticket_list.html'
+    model = Ticket
+    page = 'dev_closedtickets'
+    extra_context = {'page' : page}
+
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(accessed_by=self.request.user.devprofile, status = 'Closed')
+        return queryset
+
+
+class DevUpdateTicketView(LoginRequiredMixin, UpdateView):
+    template_name = 'greet/ticket_create.html'
+    form_class = TicketForm
+    page = 'updateticket'
+    extra_context = {'page': page}
+    success_url = reverse_lazy('dev_opentickets')
+
+    def get_object(self):
+        id_ = self.kwargs.get("pk")
+        return get_object_or_404(Ticket, id=id_)
+
+    def form_valid(self, form):
+        form.instance.accessed_by = self.request.user.devprofile
+        return super().form_valid(form)
 

@@ -6,7 +6,7 @@
 <div class="form-control">
     <h2>Welcome to the developer dashboard</h2>
     {% if request.user.is_authenticated %}
-    <li><a href="{% url 'opentickets' %}">Ticket</a></li>
+    <li><a href="{% url 'dev_opentickets' %}">Ticket</a></li>
     <li><a href="{% url 'devlogout' %}">Logout</a></li>
     {% endif %}
 </div>

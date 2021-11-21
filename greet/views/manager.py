@@ -4,14 +4,16 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.base import Model
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+from django.urls import reverse_lazy
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, authenticate, logout, models
 from django.contrib import messages
+from django.urls.conf import path
 from greet.models import PMProfile, Ticket
 from greet.forms import ManagerCreationForm, TicketForm
 
 
-from django.views.generic import View, TemplateView, ListView, CreateView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 
 class IndexView(TemplateView):
     template_name = 'greet/home.html'
@@ -79,114 +81,87 @@ def pmdashboard(request):
     return render(request, 'greet/managerdashboard.html')
 
 
-# @login_required(login_url='pmlogin')
-# def pm_openTickets(request):
-#     page = 'pm_open_tickets'
-#     tickets = Ticket.objects.all()
-#     open_tickets = tickets.filter(status = 'Open')
-#     context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-#     return render(request, 'greet/alltickets.html', context)
+class AllTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/alltickets.html'
+    model = Ticket
+    page = 'alltickets'
+    extra_context = {'page': page}
+
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(user=self.request.user.pmprofile)
+        return queryset
 
 
-class OpenTicketView(ListView):
+class OpenTicketView(LoginRequiredMixin, ListView):
     # model = Ticket
-    template_name = 'alltickets.html'
+    template_name = 'greet/alltickets.html'
+    model = Ticket
+    page = 'opentickets'
+    extra_context = {'page' : page}
 
-    def get(self, request, *args, **kwargs):
-        page = 'opentickets'
-        tickets = Ticket.objects.all()
-        open_tickets = tickets.filter(status = 'Open')
-        context  = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-        return render(request, 'greet/alltickets.html', context)
-
-# @login_required(login_url='pmlogin')
-# def pm_acceptedTickets(request):
-#     page = 'pm_accepted_tickets'
-#     tickets = Ticket.objects.all()
-#     profile = request.user.pmprofile
-#     open_tickets = tickets.filter(status = 'Accepted', user = profile)
-#     context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-#     return render(request, 'greet/alltickets.html', context)
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(status = 'Open')
+        return queryset
 
 
-class AcceptedTicketView(ListView):
-    # model = Ticket
-    template_name = 'alltickets.html'
+class AcceptedTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/alltickets.html'
+    model = Ticket
+    page = 'acceptedtickets'
+    extra_context = {'page' : page}
 
-    def get(self, request, *args, **kwargs):
-        page = 'acceptedtickets'
-        tickets = Ticket.objects.all()
-        profile = request.user.pmprofile
-        open_tickets = tickets.filter(status = 'Accepted', user = profile)
-        context  = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-        return render(request, 'greet/alltickets.html', context)
-
-@login_required(login_url='pmlogin')
-def pm_completedTickets(request):
-    page = 'pm_completed_tickets'
-    tickets = Ticket.objects.all()
-    profile = request.user.pmprofile
-    open_tickets = tickets.filter(status = 'Completed', user = profile)
-    context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-    return render(request, 'greet/alltickets.html', context)
-
-@login_required(login_url='pmlogin')
-def pm_closedTickets(request):
-    page = 'pm_closed_tickets'
-    tickets = Ticket.objects.all()
-    profile = request.user.pmprofile
-    open_tickets = tickets.filter(status = 'Closed', user = profile)
-    context = {'tickets':tickets, 'open_tickets': open_tickets, 'page':page}
-    return render(request, 'greet/alltickets.html', context)
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(user=self.request.user.pmprofile, status = 'Accepted')
+        return queryset
 
 
-@login_required(login_url='pmlogin')
-def createTicket(request):
-    form = TicketForm()
-    if request.method == 'POST':
-        form = TicketForm(request.POST)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.user = request.user.pmprofile
-            ticket.save()
-            return redirect('pmdashboard')
-    context = {'form' : form}
-    return render(request, 'greet/ticket_form.html', context)
+class CompletedTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/alltickets.html'
+    model = Ticket
+    page = 'completedtickets'
+    extra_context = {'page': page}
+
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(user=self.request.user.pmprofile, status = 'Completed')
+        return queryset
+
+
+class ClosedTicketView(LoginRequiredMixin, ListView):
+    template_name = 'greet/alltickets.html'
+    model = Ticket
+    page = 'closedtickets'
+    extra_context = {'page': page}
+
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(user=self.request.user.pmprofile, status = 'Closed')
+        return queryset
+
 
 class CreateTicketView(LoginRequiredMixin, CreateView):
     template_name = 'greet/ticket_create.html'
     form_class = TicketForm
+    page = 'createtickets'
+    extra_context = {'page': page}
+    success_url = reverse_lazy('opentickets')
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.user = self.request.user.pmprofile
         return super().form_valid(form)
 
-    # def get_queryset(self):
-    #     return PMProfile.objects.filter(user=self.request.user.pmprofile)
 
+class UpdateTicketView(LoginRequiredMixin, UpdateView):
+    template_name = 'greet/ticket_create.html'
+    form_class = TicketForm
+    page = 'updateticket'
+    extra_context = {'page': page}
+    success_url = reverse_lazy('opentickets')
 
-@login_required(login_url='pmlogin')
-def viewTickets(request):
-    page = 'viewticket'
-    all_tickets = Ticket.objects.all()
-    profile = request.user.pmprofile
-    tickets = all_tickets.filter(user = profile)
-    context = {'all_tickets':all_tickets, 'tickets': tickets, 'page': page}
-    return render(request, 'greet/alltickets.html', context)
+    def get_object(self):
+        id_ = self.kwargs.get("pk")
+        return get_object_or_404(Ticket, id=id_)
 
-@login_required(login_url='pmlogin')
-def updatepm(request, pk):
-    ticket = Ticket.objects.get(id=pk)
-    profile = request.user.pmprofile
-    form1 = TicketForm(instance=ticket)
-    if request.method == 'POST':
-        form1 = TicketForm(request.POST, instance=ticket)
-        if form1.is_valid():
-            ticket = form1.save(commit=False)
-            ticket.user = profile
-            # ticket.status = 'Accepted'
-            ticket.save()
-            return redirect('viewticket')
-
-    context = {'form' : form1}
-    return render(request, 'greet/ticketupdate.html', context)
+    def form_valid(self, form):
+        if form.instance.status == 'Open':
+            form.instance.accessed_by = None
+        # form.instance.user = self.request.user.pmprofile
+        return super().form_valid(form)
