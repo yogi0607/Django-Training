@@ -76,10 +76,8 @@ def signupmanager(request):
     context = {'page': page, 'form': form}
     return render(request, 'greet/pmlogin.html', context)
 
-@login_required(login_url='pmlogin')
-def pmdashboard(request):
-    return render(request, 'greet/managerdashboard.html')
-
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'greet/managerdashboard.html'
 
 class AllTicketView(LoginRequiredMixin, ListView):
     template_name = 'greet/alltickets.html'
