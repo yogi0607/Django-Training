@@ -70,9 +70,8 @@ def signupdeveloper(request):
     context = {'page': page, 'form': form}
     return render(request, 'greet/devlogin.html', context)
 
-@login_required(login_url='devlogin')
-def devdashboard(request):
-    return render(request, 'greet/developerdashboard.html')
+class DevDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'greet/developerdashboard.html'
 
 
 class DevOpenTicketView(LoginRequiredMixin, ListView):

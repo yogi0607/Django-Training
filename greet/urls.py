@@ -18,7 +18,7 @@ urlpatterns = [
     path('pmlogout', views.logoutmanager, name='pmlogout'),
   
     path('pmsignup', views.signupmanager, name='pmsignup'),
-    path('pmdashboard', views.pmdashboard, name='pmdashboard'),
+    path('pmdashboard', views.DashboardView.as_view(), name='pmdashboard'),
 
     path('devlogin', views.logindeveloper, name='devlogin'),
 
@@ -30,7 +30,7 @@ urlpatterns = [
 
     path('devlogout', views.logoutdevloper, name='devlogout'),
     path('devsignup', views.signupdeveloper, name='devsignup'),
-    path('devdashboard', views.devdashboard, name='devdashboard'),
+    path('devdashboard', views.DevDashboardView.as_view(), name='devdashboard'),
 
     
 ]
