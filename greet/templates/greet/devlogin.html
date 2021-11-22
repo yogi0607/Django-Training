@@ -14,7 +14,7 @@
 
     <input type="submit" value="Register Developer" />
     <p>Already have an account <a href="{% url 'devlogin' %}">Login</a></p>
-    <p>Back To Home <a href="{% url 'home' %}">Home</a></p>
+    <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
 </div>
 </form>
 {% else %}
@@ -29,7 +29,7 @@
     <input type="submit" value="Login" />
 
     <p>Don't have an account <a href="{% url 'devsignup' %}">Sign Up</a></p>
-    <p>Back To Home <a href="{% url 'home' %}">Home</a></p>
+    <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
 </div>
 </form>
 

@@ -1,0 +1,27 @@
+{% extends 'greet/base.html' %}
+
+{% block title %} Thank You {% endblock %}
+
+{% block content %}
+{% if page == 'createtickets' %}
+    <form action="" method="POST">
+        {% csrf_token %}
+    <div class="form-control">
+        <h2>Ticket Creation Form</h2>
+        {{ form.as_p }}
+        <input type="submit" value="Create Ticket" />
+    </div>
+    </form>
+
+{% elif page == 'updateticket' %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-control">
+            <h2>Ticket Acceptance Form</h2>
+            {{form.as_p}}
+            {{ profile_file.as_p }}
+            <input type="submit" value="Update Ticket" />
+        </div>
+    </form>
+{% endif %}
+{% endblock %}
