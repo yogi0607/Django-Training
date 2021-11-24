@@ -7,7 +7,7 @@
     <h2>Welcome to the manager dashboard</h2>
     {% if request.user.is_authenticated %}
     <li><a href="{% url 'createtickets' %}">Create Ticket</a></li>
-    <li><a href="{% url 'alltickets' %}">Ticket</a></li>
+    <li><a href="{% url 'alltickets' 'Open' %}">Ticket</a></li>
     <li><a href="{% url 'pmlogout' %}">Logout</a></li>
     {% endif %}
 </div>
