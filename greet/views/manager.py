@@ -13,7 +13,7 @@ from greet.models import PMProfile, Ticket
 from greet.forms import ManagerCreationForm, TicketForm
 
 
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView
+from django.views.generic import TemplateView, CreateView, UpdateView
 
 class IndexView(TemplateView):
     template_name = 'greet/home.html'
@@ -79,60 +79,18 @@ def signupmanager(request):
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'greet/managerdashboard.html'
 
-class AllTicketView(LoginRequiredMixin, ListView):
+
+class AllTicketView(LoginRequiredMixin, TemplateView):
     template_name = 'greet/alltickets.html'
-    model = Ticket
-    page = 'alltickets'
-    extra_context = {'page': page}
 
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(user=self.request.user.pmprofile)
-        return queryset
-
-
-class OpenTicketView(LoginRequiredMixin, ListView):
-    # model = Ticket
-    template_name = 'greet/alltickets.html'
-    model = Ticket
-    page = 'opentickets'
-    extra_context = {'page' : page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(status = 'Open')
-        return queryset
-
-
-class AcceptedTicketView(LoginRequiredMixin, ListView):
-    template_name = 'greet/alltickets.html'
-    model = Ticket
-    page = 'acceptedtickets'
-    extra_context = {'page' : page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(user=self.request.user.pmprofile, status = 'Accepted')
-        return queryset
-
-
-class CompletedTicketView(LoginRequiredMixin, ListView):
-    template_name = 'greet/alltickets.html'
-    model = Ticket
-    page = 'completedtickets'
-    extra_context = {'page': page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(user=self.request.user.pmprofile, status = 'Completed')
-        return queryset
-
-
-class ClosedTicketView(LoginRequiredMixin, ListView):
-    template_name = 'greet/alltickets.html'
-    model = Ticket
-    page = 'closedtickets'
-    extra_context = {'page': page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(user=self.request.user.pmprofile, status = 'Closed')
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super(AllTicketView, self).get_context_data(**kwargs)
+        context['status'] = self.kwargs.get('status', 'Open')
+        if context['status'] == 'Open':
+            context['tickets'] = Ticket.objects.filter(status = 'Open')
+        else:
+            context['tickets'] = Ticket.objects.filter(status__iexact=context['status'], user=self.request.user.pmprofile)
+        return context
 
 
 class CreateTicketView(LoginRequiredMixin, CreateView):

@@ -10,7 +10,7 @@ from django.contrib import messages
 from greet.models import DevProfile, Ticket
 from greet.forms import DeveloperCreationForm, TicketForm
 
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView
+from django.views.generic import TemplateView, UpdateView
 
 
 def logindeveloper(request):
@@ -73,49 +73,17 @@ def signupdeveloper(request):
 class DevDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'greet/developerdashboard.html'
 
-
-class DevOpenTicketView(LoginRequiredMixin, ListView):
+class DevTicketView(LoginRequiredMixin, TemplateView):
     template_name = 'greet/ticket_list.html'
-    model = Ticket
-    page = 'dev_opentickets'
-    extra_context = {'page' : page}
 
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(status = 'Open')
-        return queryset
-
-
-class DevAcceptedTicketView(LoginRequiredMixin, ListView):
-    template_name = 'greet/ticket_list.html'
-    model = Ticket
-    page = 'dev_acceptedtickets'
-    extra_context = {'page' : page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(accessed_by=self.request.user.devprofile, status = 'Accepted')
-        return queryset
-
-
-class DevCompletedTicketView(LoginRequiredMixin, ListView):
-    template_name = 'greet/ticket_list.html'
-    model = Ticket
-    page = 'dev_completedtickets'
-    extra_context = {'page' : page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(accessed_by=self.request.user.devprofile, status = 'Completed')
-        return queryset
-
-
-class DevClosedTicketView(LoginRequiredMixin, ListView):
-    template_name = 'greet/ticket_list.html'
-    model = Ticket
-    page = 'dev_closedtickets'
-    extra_context = {'page' : page}
-
-    def get_queryset(self):
-        queryset = Ticket.objects.filter(accessed_by=self.request.user.devprofile, status = 'Closed')
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super(DevTicketView, self).get_context_data(**kwargs)
+        context['status'] = self.kwargs.get('status', 'Open')
+        if context['status'] == 'Open':
+            context['tickets'] = Ticket.objects.filter(status = 'Open')
+        else:
+            context['tickets'] = Ticket.objects.filter(status__iexact=context['status'], accessed_by=self.request.user.devprofile)
+        return context
 
 
 class DevUpdateTicketView(LoginRequiredMixin, UpdateView):
