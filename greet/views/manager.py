@@ -98,7 +98,7 @@ class CreateTicketView(LoginRequiredMixin, CreateView):
     form_class = TicketForm
     page = 'createtickets'
     extra_context = {'page': page}
-    success_url = reverse_lazy('opentickets')
+    success_url = reverse_lazy('pmdashboard')
 
     def form_valid(self, form):
         form.instance.user = self.request.user.pmprofile
@@ -110,7 +110,7 @@ class UpdateTicketView(LoginRequiredMixin, UpdateView):
     form_class = TicketForm
     page = 'updateticket'
     extra_context = {'page': page}
-    success_url = reverse_lazy('opentickets')
+    success_url = reverse_lazy('pmdashboard')
 
     def get_object(self):
         id_ = self.kwargs.get("pk")

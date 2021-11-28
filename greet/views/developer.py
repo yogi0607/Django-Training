@@ -50,7 +50,7 @@ def signupdeveloper(request):
     form = DeveloperCreationForm()
 
     if request.user.is_authenticated:
-        return redirect('pmdashboard')
+        return redirect('devdashboard')
 
     if request.method == 'POST':
         form = DeveloperCreationForm(request.POST)
@@ -91,7 +91,7 @@ class DevUpdateTicketView(LoginRequiredMixin, UpdateView):
     form_class = TicketForm
     page = 'updateticket'
     extra_context = {'page': page}
-    success_url = reverse_lazy('dev_opentickets')
+    success_url = reverse_lazy('devdashboard')
 
     def get_object(self):
         id_ = self.kwargs.get("pk")
