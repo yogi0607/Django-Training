@@ -3,12 +3,27 @@
 {% block title %} Thank You {% endblock %}
 
 {% block content %}
-<div class="form-control">
-    <h2>Welcome to the manager dashboard</h2>
-    {% if request.user.is_authenticated %}
-    <li><a href="{% url 'createtickets' %}">Create Ticket</a></li>
-    <li><a href="{% url 'alltickets' 'Open' %}">Ticket</a></li>
-    <li><a href="{% url 'pmlogout' %}">Logout</a></li>
-    {% endif %}
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-10 mx-auto">
+            <div class="jumbotron">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h2>Welcome To The Manager Dashboard</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'alltickets' 'Open' %}" class="btn btn-primary">Open Tickets</a>
+                        <a href="{% url 'createtickets' %}" class="btn btn-primary">Create Ticket</a>
+                        <a href="{% url 'pmlogout' %}" class="btn btn-primary">Logout</a>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-muted">
+                        <h5>Thank You</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,13 +1,29 @@
 {% extends 'greet/base.html' %}
 
+
 {% block title %} Developer Dashboard {% endblock %}
 
 {% block content %}
-<div class="form-control">
-    <h2>Welcome to the developer dashboard</h2>
-    {% if request.user.is_authenticated %}
-    <li><a href="{% url 'dev-ticket' 'Open' %}">Ticket</a></li>
-    <li><a href="{% url 'devlogout' %}">Logout</a></li>
-    {% endif %}
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-10 mx-auto">
+            <div class="jumbotron">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h2>Welcome To The Developer Dashboard</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'dev-ticket' 'Open' %}" class="btn btn-primary">Open Tickets</a>
+                        <a href="{% url 'devlogout' %}" class="btn btn-primary">Logout</a>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-muted">
+                        <h5>Thank You</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

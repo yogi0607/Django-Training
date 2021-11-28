@@ -21,6 +21,12 @@ class ManagerCreationForm(UserCreationForm):
             'first_name' : 'Name',
         }
 
+    def __init__(self, *args, **kwargs):
+        super(ManagerCreationForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class':'form-control', 'placeholder': name})
+
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -44,6 +50,12 @@ class DeveloperCreationForm(UserCreationForm):
             'first_name' : 'Name',
         }
 
+    def __init__(self, *args, **kwargs):
+        super(DeveloperCreationForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class':'form-control', 'placeholder': name})
+
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -57,6 +69,12 @@ class TicketForm(ModelForm):
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'status']
+
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class':'form-control', 'placeholder': name})
 
 # class ManagerProfileForm(ModelForm):
 #     class Meta:

@@ -5,31 +5,65 @@
 {% block content %}
 
 {% if page == 'pmsignup' %}
-<form method="POST" action="{% url 'pmsignup' %}">
-    {% csrf_token %}
-    <div class="form-control">
-        <h1>Register as Manager </h1>
-    {{form.as_p}}
-    {{ profile_file.as_p }}
-    <input type="submit" value="Register Manager" />
-    <p>Already have an account <a href="{% url 'pmlogin' %}">Login</a></p>
-    <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+            <div class="jumbotron">
+                <form method="POST" action="{% url 'pmsignup' %}">
+                    {% csrf_token %}
+                    <div class="card text-center">
+                        <div class="card-header">
+                            <h1>Manager Sign Up</h1>
+                        </div>
+                        <div class="card-body">
+                            {% for field in form %}
+                            <div class="form__field">
+                                {{ field }}
+                                <br>
+                                {% for error in field.errors %}
+                                <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                            <input type="submit" class="btn btn-primary" value="Sign Up" />
+                        </div>
+                        <div class="card-footer text-muted">
+                            <p>Already have an account <a href="{% url 'pmlogin' %}">Login</a></p>
+                            <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
+</div>
 {% else %}
-    <form action="{% url 'pmlogin' %}" method="POST">
-        {% csrf_token %}
-        <div class="form-control">
-            <h1>Login as Manager </h1>
-        <input type="text" name="username" placeholder="Enter Username"/>
-        <br>
-        <input type="password" name="password" placeholder="Enter password"/>
-        <br>
-        <input type="submit" value="Login" />
-
-        <p>Don't have an account <a href="{% url 'pmsignup' %}">Sign Up</a></p>
-        <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+            <div class="jumbotron">
+                <form action="{% url 'pmlogin' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="card text-center">
+                        <div class="card-header">
+                            <h1>Manager Login</h1>
+                        </div>
+                        <div class="card-body">
+                            <input type="text" name="username" class="form-control" placeholder="Enter Username" />
+                            <br>
+                            <input type="password" name="password" class="form-control" placeholder="Enter password" />
+                            <br>
+                            <input type="submit" class="btn btn-primary" value="Login" />
+                        </div>
+                        <div class="card-footer text-muted">
+                            <p>Don't have an account <a href="{% url 'pmsignup' %}">Sign Up</a></p>
+                            <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    </form>
+</div>
 {% endif %}
 {% endblock %}
