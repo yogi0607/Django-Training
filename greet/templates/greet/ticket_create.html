@@ -3,28 +3,51 @@
 {% block title %} Thank You {% endblock %}
 
 {% block content %}
+{% include 'greet/navbar.html' %}
 
-{% if page == 'createtickets' %}
 <div class="container h-100">
     <div class="row align-items-center h-100">
         <div class="col-8 mx-auto">
             <div class="jumbotron">
                 <form action="" method="POST">
                     {% csrf_token %}
-                    <div class="card text-center">
+                    <div class="card">
                         <div class="card-header">
-                            <h2>Ticket Creation Form</h2>
+
+                            {% if page == 'createtickets' %}
+                            <h2 style="text-align: center;">Ticket Creation Form</h2>
+                            {% elif page == 'updateticket' %}
+                            <h2 style="text-align: center;">Ticket Updation Form</h2>
+                            {% endif %}
+
                         </div>
+
                         <div class="card-body">
                             {% for field in form %}
-                            {{ field }}
-                            <br>
-                            <br>
+                            <div class="form__field">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                <br>
+
+                                {% for error in field.errors %}
+                                <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
                             {% endfor %}
-                            <input type="submit" class="btn btn-primary" value="Create Ticket" />
+
+                            {% if page == 'createtickets' %}
+                            <div style="text-align:center">
+                                <input type="submit" class="btn btn-primary" value="Create Ticket" />
+                            </div>
+                            {% elif page == 'updateticket' %}
+                            <div style="text-align:center">
+                                <input type="submit" class="btn btn-primary" value="Update Ticket" />
+                            </div>
+                            {% endif %}
+
                         </div>
                         <div class="card-footer text-muted">
-                            <h5>Thank You</h5>
+                            <h5 style="text-align: center;">Thank You</h5>
                         </div>
                     </div>
                 </form>
@@ -33,34 +56,4 @@
     </div>
 </div>
 
-{% elif page == 'updateticket' %}
-<div class="container h-100">
-    <div class="row align-items-center h-100">
-        <div class="col-8 mx-auto">
-            <div class="jumbotron">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="card text-center">
-                        <div class="card-header">
-                            <h2>Ticket Acceptance Form</h2>
-                        </div>
-                        <div class="card-body">
-                            {% for field in form %}
-                            {{ field }}
-                            <br>
-                            <br>
-                            {% endfor %}
-                            <input type="submit" class="btn btn-primary" value="Update Ticket" />
-                        </div>
-                        <div class="card-footer text-muted">
-                            <h5>Thank You</h5>
-                        </div>
-                    </div>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-</div>
-{% endif %}
 {% endblock %}

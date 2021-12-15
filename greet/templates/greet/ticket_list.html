@@ -3,56 +3,13 @@
 {% block title %} Thank You {% endblock %}
 
 {% block content %}
+{% include 'greet/navbar.html' %}
 <div class="container h-100">
     <div class="row align-items-center h-100">
-        <div class="col-10 mx-auto">
+        <div class="col-14 mx-auto">
             <div class="jumbotron">
                 <div class="card text-center">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'devdashboard' %}">Dashboard</a>
-                            </li>
-                            {% if status == 'Open' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="true"
-                                    href="{% url 'dev-ticket' 'Open' %}">Open</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" aria-current="true" href="{% url 'dev-ticket' 'Open' %}">Open</a>
-                            </li>
-                            {% endif %}
-                            {% if status == 'accepted' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'dev-ticket' 'accepted' %}">Accepted</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'dev-ticket' 'accepted' %}">Accepted</a>
-                            </li>
-                            {% endif %}
-                            {% if status == 'completed' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'dev-ticket' 'completed' %}">Completed</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'dev-ticket' 'completed' %}">Completed</a>
-                            </li>
-                            {% endif %}
-                            {% if status == 'closed' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'dev-ticket' 'closed' %}">Closed</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'dev-ticket' 'closed' %}">Closed</a>
-                            </li>
-                            {% endif %}
-
-                        </ul>
-                    </div>
+                    
                     <br>
 
                     {% if status == 'Open' %}
@@ -78,8 +35,8 @@
                                 <tr>
                                     <th scope="col" width="350" style="border: 1px solid black ;">#</th>
                                     <th scope="col" width="350" style="border: 1px solid black ;">Title</th>
-                                    {% if status == 'Open' %}
-                                    <th scope="col" width="350" style="border: 1px solid black ;">View and Accept</th>
+                                    {% if status == 'Open' or status == 'accepted' %}
+                                    <th scope="col" width="350" style="border: 1px solid black ;">Action</th>
                                     {% endif %}
                                     <th scope="col" width="350" style="border: 1px solid black ;">Status</th>
                                     <th scope="col" width="350" style="border: 1px solid black ;">Created By</th>
@@ -91,9 +48,9 @@
                                 <tr>
                                     <td style="border: 1px solid black;">{{ forloop.counter }}</td>
                                     <td style="border: 1px solid black;">{{ ticket.title }}</td>
-                                    {% if ticket.status == 'Open' %}
+                                    {% if ticket.status == 'Open' or status == 'accepted' %}
                                     <td style="border: 1px solid black;"><a
-                                            href="{% url 'dev_updateticket' ticket.id %}">View & Accept</a></td>
+                                            href="{% url 'dev_updateticket' ticket.id %}">View & Update</a></td>
                                     {% endif %}
                                     <td style="border: 1px solid black;">{{ ticket.status }}</td>
                                     <td style="border: 1px solid black;">{{ ticket.user }}</td>

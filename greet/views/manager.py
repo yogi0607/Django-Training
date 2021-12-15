@@ -1,16 +1,16 @@
 from django import forms
 from django import contrib
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models.base import Model
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout, models
 from django.contrib import messages
 from django.urls.conf import path
-from greet.models import PMProfile, Ticket
-from greet.forms import ManagerCreationForm, TicketForm
+from greet.models import PMProfile, Ticket, User
+from greet.forms import ManagerCreationForm, TicketForm, TicketUpdationForm
 
 
 from django.views.generic import TemplateView, CreateView, UpdateView
@@ -22,7 +22,7 @@ class IndexView(TemplateView):
 def loginmanager(request):
     page = 'pmlogin'
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_manager:
         return redirect('pmdashboard')
 
     if request.method == 'POST':
@@ -51,36 +51,23 @@ def logoutmanager(request):
     return redirect('pmlogin')
 
 
-def signupmanager(request):
+class RegisterManager(CreateView):
+    template_name = 'greet/pmlogin.html'
+    form_class = ManagerCreationForm
+    model = User
     page = 'pmsignup'
-    form = ManagerCreationForm()
+    extra_context = {'page': page}
+    success_url = reverse_lazy('pmlogin')
 
-    if request.user.is_authenticated:
-        return redirect('pmdashboard')
 
-    if request.method == 'POST':
-        form = ManagerCreationForm(request.POST)
-
-        if form.is_valid():
-            user = form.save()
-            user.save()
-
-            messages.success(request, 'User account was created!')
-
-            login(request, user)
-            return redirect('pmlogin')
-
-        else:
-            messages.success(request, 'An error has occured during registration')
-
-    context = {'page': page, 'form': form}
-    return render(request, 'greet/pmlogin.html', context)
-
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'greet.view_pmprofile'
     template_name = 'greet/managerdashboard.html'
+    # login_url = "pmlogin"
 
 
-class AllTicketView(LoginRequiredMixin, TemplateView):
+class AllTicketView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = ('greet.view_pmprofile', 'greet.view_ticket')
     template_name = 'greet/alltickets.html'
 
     def get_context_data(self, **kwargs):
@@ -93,7 +80,8 @@ class AllTicketView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class CreateTicketView(LoginRequiredMixin, CreateView):
+class CreateTicketView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('greet.add_ticket')
     template_name = 'greet/ticket_create.html'
     form_class = TicketForm
     page = 'createtickets'
@@ -101,13 +89,15 @@ class CreateTicketView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('pmdashboard')
 
     def form_valid(self, form):
+        # form.fields['status'].widget = forms.HiddenInput()
         form.instance.user = self.request.user.pmprofile
         return super().form_valid(form)
 
 
-class UpdateTicketView(LoginRequiredMixin, UpdateView):
+class UpdateTicketView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('greet.view_pmprofile', 'greet.change_ticket')
     template_name = 'greet/ticket_create.html'
-    form_class = TicketForm
+    form_class = TicketUpdationForm
     page = 'updateticket'
     extra_context = {'page': page}
     success_url = reverse_lazy('pmdashboard')
