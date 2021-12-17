@@ -125,7 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'greet.User'
 
-LOGIN_REDIRECT_URL = 'login_success'
+# LOGIN_REDIRECT_URL = 'login_success'
 
 
 CELERY_BROKER_URL = "redis://redis:6379"

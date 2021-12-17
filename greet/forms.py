@@ -111,11 +111,25 @@ class TicketUpdationForm(ModelForm):
         labels = {
             'title' : 'Title',
             'description' : 'Description',
-            'status' : 'Status'
+            'status' : 'Update Status'
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
+        if self.user.is_developer:
+            self.fields['status'] = forms.ChoiceField(label=('Update Status'), 
+                               choices=(('Accepted', ('Accepted')), 
+                                        ('Completed', ('Completed'))))
+        
+        elif self.user.is_manager:
+            self.fields['status'] = forms.ChoiceField(label=('Update Status'), 
+                               choices=(('Accepted', ('Accepted')), 
+                                        ('Completed', ('Completed')),
+                                        ('Closed', ('Closed'))))
+
+        # print(self.fields['status'])
+        # print(type(self.fields['status']))
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class':'form-control'})

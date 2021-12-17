@@ -10,39 +10,28 @@ from django.contrib.auth import login, authenticate, logout, models
 from django.contrib import messages
 from django.urls.conf import path
 from greet.models import PMProfile, Ticket, User
-from greet.forms import ManagerCreationForm, TicketForm, TicketUpdationForm
+from greet.forms import ManagerCreationForm, TicketForm, TicketUpdationForm, UserLoginForm
 
 
 from django.views.generic import TemplateView, CreateView, UpdateView
+from django.contrib.auth.views import LoginView
+from django.urls import reverse
 
 class IndexView(TemplateView):
     template_name = 'greet/home.html'
 
 
-def loginmanager(request):
+class ManagerLoginView(LoginView):
+    authentication_form = UserLoginForm
+    template_name = 'greet/pmlogin.html'
     page = 'pmlogin'
+    extra_context = {'page': page}
 
-    if request.user.is_authenticated and request.user.is_manager:
-        return redirect('pmdashboard')
+    def get_success_url(self):
+        if self.request.user.is_manager:
+            return reverse('pmdashboard')
+        return super().get_success_url()
 
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        try:
-            user = PMProfile.objects.get(username=username)
-        except:
-            messages.error(request, 'Username does not exist')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None and user.is_manager:
-            login(request, user)
-            return redirect('pmdashboard')
-        else:
-            messages.error(request, 'Username or password is incorrect')
-
-    return render(request, 'greet/pmlogin.html')
 
 
 def logoutmanager(request):
@@ -62,6 +51,7 @@ class RegisterManager(CreateView):
 
 class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'greet.view_pmprofile'
+    extra_context = {'page': 'dashboard'}
     template_name = 'greet/managerdashboard.html'
     # login_url = "pmlogin"
 
@@ -111,3 +101,8 @@ class UpdateTicketView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             form.instance.accessed_by = None
         # form.instance.user = self.request.user.pmprofile
         return super().form_valid(form)
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['user'] = self.request.user
+        return kwargs

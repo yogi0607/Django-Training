@@ -1,18 +1,21 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg bg-light text-uppercase">
   <div class="container">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarButtonsExample"
-      aria-controls="navbarButtonsExample" aria-expanded="false" aria-label="Toggle navigation">
-      <!-- <span class="navbar-toggler-icon"></span> -->
-    </button>
-
+    {% if request.user.is_authenticated and request.user.is_manager %}
+    <a class="navbar-brand" href="{% url 'pmdashboard' %}">Dashboard</a>
+    {% elif request.user.is_authenticated and request.user.is_developer %}
+    <a class="navbar-brand" href="{% url 'devdashboard' %}">Dashboard</a>
+    {% endif %}
+    <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+  </button>
+  
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      
       {% if request.user.is_authenticated and request.user.is_manager %}
       <ul class="nav nav-tabs me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'pmdashboard' %}">Dashboard</a>
-        </li>
         {% if status == 'Open' %}
         <li class="nav-item">
           <a class="nav-link active" aria-current="true" href="{% url 'alltickets' 'Open' %}">Open</a>
@@ -60,9 +63,6 @@
 
       {% elif request.user.is_authenticated and request.user.is_developer %}
       <ul class="nav nav-tabs me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'devdashboard' %}">Dashboard</a>
-        </li>
         {% if status == 'Open' %}
         <li class="nav-item">
           <a class="nav-link active" aria-current="true" href="{% url 'dev-ticket' 'Open' %}">Open</a>

@@ -5,14 +5,14 @@
 {% block content %}
 
 {% if page == 'pmsignup' %}
-<div class="container h-100">
+<div class="container mt-5 mb-3">
     <div class="row align-items-center h-100">
         <div class="col-6 mx-auto">
             <div class="jumbotron">
                 <form method="POST" action="{% url 'pmsignup' %}">
                     {% csrf_token %}
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header text-white bg-primary">
                             <h1 style="text-align: center;">Manager Sign Up</h1>
                         </div>
                         <div class="card-body">
@@ -41,26 +41,35 @@
     </div>
 </div>
 {% else %}
-<div class="container h-100">
+<div class="container mt-5 mb-3">
     <div class="row align-items-center h-100">
         <div class="col-6 mx-auto">
             <div class="jumbotron">
                 <form action="{% url 'pmlogin' %}" method="POST">
                     {% csrf_token %}
-                    <div class="card text-center">
-                        <div class="card-header">
-                            <h1>Manager Login</h1>
+                    <div class="card">
+                        <div class="card-header text-white bg-primary">
+                            <h1 style="text-align: center;">Manager Login</h1>
                         </div>
                         <div class="card-body">
-                            <input type="text" name="username" class="form-control" placeholder="Enter Username" />
+                            {% for field in form %}
+                            <div class="form__field">
+                                {{ field.label_tag }}
+                                {{ field }}
+
+                                {% for error in field.errors %}
+                                <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
                             <br>
-                            <input type="password" name="password" class="form-control" placeholder="Enter password" />
-                            <br>
+                            <div style="text-align:center">
                             <input type="submit" class="btn btn-primary" value="Login" />
+                            </div>
                         </div>
                         <div class="card-footer text-muted">
-                            <p>Don't have an account <a href="{% url 'pmsignup' %}">Sign Up</a></p>
-                            <p>Back To Home <a href="{% url 'indexview' %}">Home</a></p>
+                            <p style="text-align: center;">Don't have an account <a href="{% url 'pmsignup' %}">Sign Up</a></p>
+                            <p style="text-align: center;">Back To Home <a href="{% url 'indexview' %}">Home</a></p>
                         </div>
                     </div>
                 </form>

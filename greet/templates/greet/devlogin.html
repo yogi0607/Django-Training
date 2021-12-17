@@ -5,14 +5,14 @@
 {% block content %}
 
 {% if page == 'devsignup' %}
-<div class="container h-100">
+<div class="container mt-5 mb-3">
     <div class="row align-items-center h-100">
         <div class="col-6 mx-auto">
             <div class="jumbotron">
                 <form method="POST" action="{% url 'devsignup' %}">
                     {% csrf_token %}
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header text-white bg-primary">
                             <h1 style="text-align: center;">Developer Sign Up</h1>
                         </div>
                         <div class="card-body">
@@ -42,14 +42,14 @@
     </div>
 </div>
 {% else %}
-<div class="container h-100">
+<div class="container mt-5 mb-3">
     <div class="row align-items-center h-100">
         <div class="col-6 mx-auto">
             <div class="jumbotron">
                 <form action="{% url 'devlogin' %}" method="POST">
                     {% csrf_token %}
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header text-white bg-primary">
                             <h1 style="text-align: center;">Developer Login</h1>
                         </div>
                         <div class="card-body">

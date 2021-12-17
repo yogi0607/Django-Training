@@ -18,19 +18,14 @@ from django.views.generic import TemplateView, UpdateView
 from django.contrib.auth.views import LoginView
 
 from greet.views.manager import CreateTicketView
+from django.urls import reverse
 
 
 class DevDashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'greet.view_devprofile'
+    extra_context = {'page': 'dashboard'}
     template_name = 'greet/developerdashboard.html'
 
-
-def login_success(request):
-    if request.user.is_developer:
-        # user is an admin
-        return redirect('devdashboard')
-    else:
-        return redirect('pmdashboard')
 
 class DeveloperLoginView(LoginView):
     authentication_form = UserLoginForm
@@ -38,33 +33,11 @@ class DeveloperLoginView(LoginView):
     page = 'devlogin'
     extra_context = {'page': page}
 
-    def get_redirect_url(self):
-        return super().get_redirect_url()
+    def get_success_url(self):
+        if self.request.user.is_developer:
+            return reverse('devdashboard')
 
-# def logindeveloper(request):
-#     page = 'devlogin'
-
-#     if request.user.is_authenticated:
-#         return redirect('devdashboard')
-
-#     if request.method == 'POST':
-#         username = request.POST['username']
-#         password = request.POST['password']
-
-#         try:
-#             user = DevProfile.objects.get(username=username)
-#         except:
-#             messages.error(request, 'Username does not exist')
-
-#         user = authenticate(request, username=username, password=password)
-
-#         if user is not None and user.is_developer:
-#             login(request, user)
-#             return redirect('devdashboard')
-#         else:
-#             messages.error(request, 'Username or password is incorrect')
-
-#     return render(request, 'greet/devlogin.html')
+        return super().get_success_url()
 
 
 def logoutdevloper(request):
@@ -112,4 +85,9 @@ class DevUpdateTicketView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
     def form_valid(self, form):
         form.instance.accessed_by = self.request.user.devprofile
         return super().form_valid(form)
+    
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['user'] = self.request.user
+        return kwargs
 
