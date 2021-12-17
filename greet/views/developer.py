@@ -1,42 +1,43 @@
 from django import forms
 from django import contrib
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db import models
 from django.urls import reverse_lazy
+from django.contrib.auth.views import redirect_to_login
+# from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from greet.models import DevProfile, Ticket
-from greet.forms import DeveloperCreationForm, TicketForm
+from django.views.generic.edit import CreateView
+from greet.models import DevProfile, Ticket, User
+from greet.forms import DeveloperCreationForm, TicketUpdationForm, UserLoginForm
 
 from django.views.generic import TemplateView, UpdateView
+from django.contrib.auth.views import LoginView
+
+from greet.views.manager import CreateTicketView
+from django.urls import reverse
 
 
-def logindeveloper(request):
+class DevDashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'greet.view_devprofile'
+    extra_context = {'page': 'dashboard'}
+    template_name = 'greet/developerdashboard.html'
+
+
+class DeveloperLoginView(LoginView):
+    authentication_form = UserLoginForm
+    template_name = 'greet/devlogin.html'
     page = 'devlogin'
+    extra_context = {'page': page}
 
-    if request.user.is_authenticated:
-        return redirect('devdashboard')
+    def get_success_url(self):
+        if self.request.user.is_developer:
+            return reverse('devdashboard')
 
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        try:
-            user = DevProfile.objects.get(username=username)
-        except:
-            messages.error(request, 'Username does not exist')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None and user.is_developer:
-            login(request, user)
-            return redirect('devdashboard')
-        else:
-            messages.error(request, 'Username or password is incorrect')
-
-    return render(request, 'greet/devlogin.html')
+        return super().get_success_url()
 
 
 def logoutdevloper(request):
@@ -45,35 +46,17 @@ def logoutdevloper(request):
     return redirect('devlogin')
 
 
-def signupdeveloper(request):
+class RegisterDeveloper(CreateView):
+    template_name = 'greet/devlogin.html'
+    form_class = DeveloperCreationForm
+    model = User
     page = 'devsignup'
-    form = DeveloperCreationForm()
+    extra_context = {'page': page}
+    success_url = reverse_lazy('devlogin')
 
-    if request.user.is_authenticated:
-        return redirect('devdashboard')
 
-    if request.method == 'POST':
-        form = DeveloperCreationForm(request.POST)
-
-        if form.is_valid():
-            user = form.save()
-            user.save()
-
-            messages.success(request, 'User account was created!')
-
-            login(request, user)
-            return redirect('devdashboard')
-
-        else:
-            messages.success(request, 'An error has occured during registration')
-
-    context = {'page': page, 'form': form}
-    return render(request, 'greet/devlogin.html', context)
-
-class DevDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'greet/developerdashboard.html'
-
-class DevTicketView(LoginRequiredMixin, TemplateView):
+class DevTicketView(LoginRequiredMixin,  PermissionRequiredMixin, TemplateView):
+    permission_required = ('greet.view_devprofile', 'greet.view_ticket')
     template_name = 'greet/ticket_list.html'
 
     def get_context_data(self, **kwargs):
@@ -86,9 +69,11 @@ class DevTicketView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class DevUpdateTicketView(LoginRequiredMixin, UpdateView):
+class DevUpdateTicketView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('greet.view_devprofile', 'greet.change_ticket')
     template_name = 'greet/ticket_create.html'
-    form_class = TicketForm
+
+    form_class = TicketUpdationForm
     page = 'updateticket'
     extra_context = {'page': page}
     success_url = reverse_lazy('devdashboard')
@@ -100,4 +85,9 @@ class DevUpdateTicketView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.accessed_by = self.request.user.devprofile
         return super().form_valid(form)
+    
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['user'] = self.request.user
+        return kwargs
 

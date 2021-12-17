@@ -3,119 +3,72 @@
 {% block title %} Thank You {% endblock %}
 
 {% block content %}
-<div class="container h-100">
+{% include 'greet/navbar.html' %}
+<section class="masthead bg-white text-center" style="padding: 30px;">
+<div class="container mt-5 mb-3">
     <div class="row align-items-center h-100">
-        <div class="col-10 mx-auto">
+        <div class="col-14 mx-auto">
             <div class="jumbotron">
-                <div class="card text-center">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'pmdashboard' %}">Dashboard</a>
-                            </li>
-                            {% if status == 'Open' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="true"
-                                    href="{% url 'alltickets' 'Open' %}">Open</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" aria-current="true" href="{% url 'alltickets' 'Open' %}">Open</a>
-                            </li>
-                            {% endif %}
-                            {% if status == 'accepted' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'alltickets' 'accepted' %}">Accepted</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'alltickets' 'accepted' %}">Accepted</a>
-                            </li>
-                            {% endif %}
-                            {% if status == 'completed' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'alltickets' 'completed' %}">Completed</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'alltickets' 'completed' %}">Completed</a>
-                            </li>
-                            {% endif %}
-                            {% if status == 'closed' %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'alltickets' 'closed' %}">Closed</a>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'alltickets' 'closed' %}">Closed</a>
-                            </li>
-                            {% endif %}
-
-                        </ul>
-                    </div>
+                
+                    
                     <br>
 
                     {% if status == 'Open' %}
-                    <div class="card-header">
+                    <div class="border border-white rounded text-white bg-primary">
                         <h2>Open Tickets</h2>
                     </div>
                     {% elif status == 'accepted' %}
-                    <div class="card-header">
+                    <div class="border border-white rounded text-white bg-primary">
                         <h2>Accepted Tickets</h2>
                     </div>
                     {% elif status == 'completed' %}
-                    <div class="card-header">
+                    <div class="border border-white rounded text-white bg-primary">
                         <h2>Completed Tickets</h2>
                     </div>
                     {% elif status == 'closed' %}
-                    <div class="card-header">
+                    <div class="border border-white rounded text-white bg-primary">
                         <h2>Closed Tickets</h2>
                     </div>
                     {% endif %}
                     <div class="card-body">
-                        <table class="table" style="border: 1px solid black;">
+                        <table class="table table-dark table-striped">
                             <thead class="thed-dark">
                                 <tr>
-                                    <th scope="col" width="350" style="border: 1px solid black ;">#</th>
-                                    <th scope="col" width="350" style="border: 1px solid black ;">Title</th>
+                                    <th>#</th>
+                                    <th>Title</th>
                                     {% if status != 'Open' %}
-                                    <th scope="col" scope="col" width="350" style="border: 1px solid black ;">Update
-                                        Ticket</th>
+                                    <th>Update Ticket</th>
                                     {% else %}
-                                    <th scope="col" width="350" style="border: 1px solid black ;">View and Accept</th>
+                                    <th>View and Accept</th>
                                     {% endif %}
-                                    <th scope="col" width="350" style="border: 1px solid black ;">Status</th>
-                                    <th scope="col" width="350" style="border: 1px solid black ;">Created By</th>
-                                    <th scope="col" width="350" style="border: 1px solid black ;">Accepted By</th>
+                                    <th>Status</th>
+                                    <th>Created By</th>
+                                    <th>Accepted By</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for ticket in tickets %}
                                 <tr>
-                                    <td style="border: 1px solid black;">{{ forloop.counter }}</td>
-                                    <td style="border: 1px solid black;">{{ ticket.title }}</td>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ ticket.title }}</td>
                                     {% if ticket.status == 'Open' %}
-                                    <td style="border: 1px solid black;"><a
-                                            href="{% url 'updateticket' ticket.id %}">View & Accept</a></td>
+                                    <td><a href="{% url 'updateticket' ticket.id %}">View & Accept</a></td>
                                     {% else %}
-                                    <td style="border: 1px solid black;"><a
-                                            href="{% url 'updateticket' ticket.id %}">Update</a></td>
+                                    <td><a href="{% url 'updateticket' ticket.id %}">Update</a></td>
                                     {% endif %}
-                                    <td style="border: 1px solid black;">{{ ticket.status }}</td>
-                                    <td style="border: 1px solid black;">{{ ticket.user }}</td>
-                                    <td style="border: 1px solid black;">{{ ticket.accessed_by }}</td>
+                                    <td>{{ ticket.status }}</td>
+                                    <td>{{ ticket.user }}</td>
+                                    <td>{{ ticket.accessed_by }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer text-muted">
-                        <h5>Thank You</h5>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
 </div>
+</section>
 
 {% endblock %}
