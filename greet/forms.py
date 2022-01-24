@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.forms import ModelForm, fields
+from django.contrib.auth.models import Group
 # from django.contrib.auth.models import User
 from django.db import transaction
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -50,6 +51,8 @@ class ManagerCreationForm(UserCreationForm):
         user.is_manager = True
         user.save()
         manager = PMProfile.objects.create(user=user)
+        group = Group.objects.get(name='manager')
+        user.groups.add(group)
         return user
 
 
@@ -85,6 +88,8 @@ class DeveloperCreationForm(UserCreationForm):
         user.is_developer = True
         user.save()
         developer = DevProfile.objects.create(user=user)
+        group = Group.objects.get(name='developer')
+        user.groups.add(group)
         return user
 
 

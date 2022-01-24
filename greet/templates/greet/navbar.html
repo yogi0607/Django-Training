@@ -15,6 +15,7 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       
       {% if request.user.is_authenticated and request.user.is_manager %}
+      {% if page != 'dashboard' %}
       <ul class="nav nav-tabs me-auto mb-2 mb-lg-0">
         {% if status == 'Open' %}
         <li class="nav-item">
@@ -54,6 +55,7 @@
         {% endif %}
 
       </ul>
+      {% endif %}
       <div class="d-flex">
         <button type="button" class="btn me-3">
           <span style="text-transform:uppercase">Welcome {{ request.user.pmprofile }}</span>
@@ -62,6 +64,7 @@
       </div>
 
       {% elif request.user.is_authenticated and request.user.is_developer %}
+      {% if page != 'dashboard' %}
       <ul class="nav nav-tabs me-auto mb-2 mb-lg-0">
         {% if status == 'Open' %}
         <li class="nav-item">
@@ -101,6 +104,7 @@
         {% endif %}
 
       </ul>
+      {% endif %}
       
       <div class="d-flex">
         <button type="button" class="btn me-3">
