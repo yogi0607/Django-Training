@@ -3,6 +3,7 @@ from django import contrib
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import models
 from django.urls import reverse_lazy
 from django.contrib.auth.views import redirect_to_login
